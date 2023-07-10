@@ -505,10 +505,11 @@ LIMIT 1;
 
 -- 11. En fazla yoruma sahip gönderiyi alın.
 
-SELECT posts.title, SUM(comments.post_id) AS sum_post FROM posts
-JOIN comments ON posts.user_id = comments.user_id
-GROUP BY posts.title
-ORDER BY sum_post DESC
+SELECT p.title, COUNT(c.comment_id) AS total_comments
+FROM posts p
+LEFT JOIN comments c ON p.post_id = c.post_id
+GROUP BY p.title
+ORDER BY total_comments DESC
 LIMIT 1;
 
 
@@ -550,7 +551,8 @@ GROUP BY post_id) AS avgComment;
 -- 16. Son 30 günde yayınlanan gönderileri gösterin.
 
 SELECT * FROM posts
-WHERE creation_date >= '2023-05-17';
+WHERE is_published IS TRUE AND
+creation_date >= CURRENT_DATE - 30;
 
 
 
